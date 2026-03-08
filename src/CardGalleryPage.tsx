@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { ArrowLeft, Maximize2, Minimize2 } from 'lucide-react';
 import { CardGallery } from './components/cards/CardGallery';
@@ -9,14 +10,13 @@ interface CardGalleryPageProps {
 
 export default function CardGalleryPage({ onBack }: CardGalleryPageProps) {
   const [cardSize, setCardSize] = useState<'small' | 'medium' | 'large'>('medium');
-
   return (
     <div className="w-screen h-screen bg-white overflow-hidden relative">
       {/* Header */}
       <div className="absolute top-0 left-0 right-0 z-30 bg-gradient-to-r from-purple-500 to-pink-500 p-1 shadow-xl">
         <div className="bg-white px-8 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            {onBack && (
+            {onBack ? (
               <motion.button
                 onClick={onBack}
                 whileHover={{ scale: 1.1 }}
@@ -25,6 +25,16 @@ export default function CardGalleryPage({ onBack }: CardGalleryPageProps) {
               >
                 <ArrowLeft className="w-5 h-5" />
               </motion.button>
+            ) : (
+              <Link to="/">
+                <motion.span
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="inline-flex bg-gradient-to-br from-gray-400 to-gray-600 rounded-full p-2 shadow-lg text-white"
+                >
+                  <ArrowLeft className="w-5 h-5" />
+                </motion.span>
+              </Link>
             )}
             <h1 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
               🎴 Galería de Cartas
