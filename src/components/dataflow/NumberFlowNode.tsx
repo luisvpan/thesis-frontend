@@ -9,7 +9,7 @@ export type NumberFlowNodeData = {
 export function NumberFlowNode({ data }: NodeProps<{ type: 'number'; data: NumberFlowNodeData }>) {
   const value = data?.value ?? 0;
   return (
-    <div className="nodrag nopan">
+    <div className="nopan">
       <Handle type="target" position={Position.Left} id="in" className="!w-3 !h-3 !border-2 !bg-white" />
       <NumberCard value={value} size="small" />
       <Handle type="source" position={Position.Right} id="out" className="!w-3 !h-3 !border-2 !bg-white" />

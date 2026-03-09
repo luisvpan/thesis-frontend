@@ -26,6 +26,13 @@ const nodeTypes: NodeTypes = {
   operator: OperatorFlowNode,
 };
 
+/** Valor de salida de un nodo: número tiene value, operador tiene value (resultado) */
+function getNodeValue(node: DataflowNode | null | undefined): number | undefined {
+  if (!node?.data) return undefined;
+  const d = node.data as NumberFlowNodeData & OperatorFlowNodeData;
+  return d.value ?? d.result;
+}
+
 function computeOperatorResult(
   operatorId: string,
   nodes: DataflowNode[],
@@ -36,8 +43,8 @@ function computeOperatorResult(
   const edgeB = edgesToOperator.find((e) => e.targetHandle === 'b');
   const nodeA = edgeA ? nodes.find((n) => n.id === edgeA.source) : null;
   const nodeB = edgeB ? nodes.find((n) => n.id === edgeB.source) : null;
-  const valA = (nodeA?.data as NumberFlowNodeData | undefined)?.value;
-  const valB = (nodeB?.data as NumberFlowNodeData | undefined)?.value;
+  const valA = getNodeValue(nodeA);
+  const valB = getNodeValue(nodeB);
   if (typeof valA !== 'number' || typeof valB !== 'number') return undefined;
   const operator = (nodes.find((n) => n.id === operatorId)?.data as OperatorFlowNodeData | undefined)?.operator;
   if (operator === 'adicion') return valA + valB;
@@ -77,18 +84,26 @@ export default function DataflowPage() {
     [setEdges]
   );
 
-  // Calcular resultados de operadores cuando cambian nodos o aristas
+  // Calcular resultados de operadores (varios pasos para cadenas op1 → op2)
   useEffect(() => {
-    setNodes((nds) =>
-      nds.map((node) => {
-        if (node.type !== 'operator') return node;
-        const result = computeOperatorResult(node.id, nds, edges);
-        return {
-          ...node,
-          data: { ...node.data, result },
-        };
-      })
-    );
+    setNodes((nds) => {
+      let current = nds;
+      for (let pass = 0; pass < 10; pass++) {
+        let changed = false;
+        current = current.map((node) => {
+          if (node.type !== 'operator') return node;
+          const result = computeOperatorResult(node.id, current, edges);
+          const prev = (node.data as OperatorFlowNodeData).result;
+          if (result !== prev) changed = true;
+          return {
+            ...node,
+            data: { ...node.data, result, value: result },
+          };
+        });
+        if (!changed) break;
+      }
+      return current;
+    });
   }, [edges, setNodes]);
 
   const addNumberNode = useCallback(
@@ -195,7 +210,7 @@ export default function DataflowPage() {
               </div>
             </div>
             <p className="text-slate-500 text-xs max-w-[200px]">
-              Conecta números (salida derecha) a los operadores (entradas izquierda). El resultado se muestra debajo del operador.
+              Conecta números o resultados de operadores (salida derecha) a los operadores (entradas izquierda). El resultado se muestra debajo y puede usarse en otro operador.
             </p>
           </Panel>
         </ReactFlow>

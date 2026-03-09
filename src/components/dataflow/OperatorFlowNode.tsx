@@ -6,15 +6,17 @@ import type { MathOperatorType } from '@/types/card-types';
 export type OperatorFlowNodeData = {
   operator: MathOperatorType;
   result?: number;
+  /** Valor de salida (igual al resultado) para usar como entrada en otros nodos del dataflow */
+  value?: number;
 };
 
 export function OperatorFlowNode({ data }: NodeProps<{ type: 'operator'; data: OperatorFlowNodeData }>) {
   const operator = data?.operator ?? 'adicion';
-  const result = data?.result;
+  const result = data?.result ?? data?.value;
   const showResult = result !== undefined && result !== null;
 
   return (
-    <div className="nodrag nopan relative">
+    <div className="nopan relative">
       {/* Dos entradas: arriba y abajo del borde izquierdo */}
       <Handle type="target" position={Position.Left} id="a" className="!w-3 !h-3 !border-2 !bg-white !top-1/4" style={{ top: '25%' }} />
       <Handle type="target" position={Position.Left} id="b" className="!w-3 !h-3 !border-2 !bg-white !top-3/4" style={{ top: '75%' }} />
