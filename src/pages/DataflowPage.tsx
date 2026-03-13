@@ -1,5 +1,5 @@
-import { useCallback, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useCallback, useEffect, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import {
   ReactFlow,
   useNodesState,
@@ -8,8 +8,6 @@ import {
   type Connection,
   type Edge,
   type Node,
-  Panel,
-  Controls,
   Background,
   type NodeTypes,
 } from '@xyflow/react';
@@ -17,7 +15,18 @@ import '@xyflow/react/dist/style.css';
 import { NumberFlowNode, OperatorFlowNode } from '@/components/dataflow';
 import type { NumberFlowNodeData, OperatorFlowNodeData } from '@/components/dataflow';
 import type { MathOperatorType } from '@/types/card-types';
-import { ArrowLeft, Plus, Minus } from 'lucide-react';
+import type { SocketAddNodePayload, SocketAddEdgePayload } from '@/types/socket-types';
+import { useSocket } from '@/contexts/SocketContext';
+import { getLevelConfig } from '@/data/levelConfig';
+import { ArrowLeft, Plus, Minus, Volume2, Play } from 'lucide-react';
+
+type ViewMode = 'pictorico' | 'concreto' | 'abstracto';
+
+const VIEW_MODE_LABELS: Record<ViewMode, string> = {
+  pictorico: 'Pictórico',
+  concreto: 'Concreto',
+  abstracto: 'Abstracto',
+};
 
 type DataflowNode = Node<NumberFlowNodeData, 'number'> | Node<OperatorFlowNodeData, 'operator'>;
 
@@ -31,6 +40,14 @@ function getNodeValue(node: DataflowNode | null | undefined): number | undefined
   if (!node?.data) return undefined;
   const d = node.data as NumberFlowNodeData & OperatorFlowNodeData;
   return d.value ?? d.result;
+}
+
+/** Nodo con mayor position.x (el más a la derecha del canvas) */
+function getRightmostNode(nodes: DataflowNode[]): DataflowNode | null {
+  if (nodes.length === 0) return null;
+  return nodes.reduce((rightmost, node) =>
+    node.position.x > rightmost.position.x ? node : rightmost
+  );
 }
 
 function computeOperatorResult(
@@ -75,9 +92,61 @@ const initialNodes: DataflowNode[] = [
 
 const initialEdges: Edge[] = [];
 
-export default function DataflowPage() {
+function speakTitle(title: string, subtitle: string) {
+  if (typeof window === 'undefined' || !window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(`${title}. ${subtitle}`);
+  u.lang = 'es-ES';
+  window.speechSynthesis.speak(u);
+}
+
+export default function DataflowPage({ isSandbox }: { isSandbox: boolean }) {
+  const params = useParams();
+  const worldId = params.worldId;
+  const level = params.level;
+  const levelConfig = getLevelConfig(worldId, level, isSandbox);
+  const socket = useSocket();
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [viewMode, setViewMode] = useState<ViewMode>('pictorico');
+  const [executedResult, setExecutedResult] = useState<number | null>(null);
+  const backTo = worldId ? (isSandbox ? '/juego' : `/juego/${worldId}`) : '/';
+
+  useEffect(() => {
+    if (!socket) return;
+
+    const onAddNode = (payload: SocketAddNodePayload) => {
+      const node: DataflowNode = {
+        id: payload.id,
+        type: payload.type,
+        position: payload.position,
+        data: payload.data as NumberFlowNodeData & OperatorFlowNodeData,
+      };
+      setNodes((nds) => [...nds, node]);
+    };
+
+    const onAddEdge = (payload: SocketAddEdgePayload) => {
+      const edge: Edge = {
+        id: payload.id ?? `e-${payload.source}-${payload.target}-${Date.now()}`,
+        source: payload.source,
+        target: payload.target,
+        sourceHandle: payload.sourceHandle ?? undefined,
+        targetHandle: payload.targetHandle ?? undefined,
+      };
+      setEdges((eds) => [...eds, edge]);
+    };
+
+    socket.on('addNode', onAddNode);
+    socket.on('addEdge', onAddEdge);
+    return () => {
+      socket.off('addNode', onAddNode);
+      socket.off('addEdge', onAddEdge);
+    };
+  }, [socket, setNodes, setEdges]);
+
+  const cycleViewMode = useCallback(() => {
+    setViewMode((m) => (m === 'pictorico' ? 'concreto' : m === 'concreto' ? 'abstracto' : 'pictorico'));
+  }, []);
 
   const onConnect = useCallback(
     (connection: Connection) => setEdges((eds) => addEdge(connection, eds)),
@@ -138,83 +207,161 @@ export default function DataflowPage() {
     [setNodes]
   );
 
+  const onExecute = useCallback(() => {
+    const rightmost = getRightmostNode(nodes);
+    const value = rightmost ? getNodeValue(rightmost) : undefined;
+    setExecutedResult(typeof value === 'number' ? value : null);
+  }, [nodes]);
+
   return (
-    <div className="h-screen w-screen flex flex-col bg-slate-900">
-      <header className="flex items-center justify-between px-4 py-3 bg-slate-800/80 border-b border-slate-700 shrink-0">
+    <div className="h-screen w-screen flex flex-col bg-slate-100">
+      {/* Header: volver | título centrado + subtítulo | modo | audio — gradiente como menú, sin sidebar en Sandbox */}
+      <header className="flex items-center justify-between px-4 py-3 bg-gradient-to-b from-sky-300 via-sky-200 to-emerald-100 border-b border-sky-300/50 shrink-0 gap-4">
         <Link
-          to="/"
-          className="flex items-center gap-2 text-slate-300 hover:text-white transition-colors"
+          to={backTo}
+          className="flex items-center gap-2 text-slate-600 hover:text-slate-900 transition-colors shrink-0 text-lg"
         >
           <ArrowLeft className="w-5 h-5" />
           Volver
         </Link>
-        <h1 className="text-lg font-bold text-white">Dataflow: sumas y restas</h1>
-        <div className="w-24" />
+
+        <div className="flex-1 flex flex-col items-center justify-center min-w-0">
+          <h1 className="text-2xl font-bold text-slate-800 text-center truncate max-w-full">
+            {levelConfig.title}
+          </h1>
+          <p className="text-lg text-slate-600 text-center truncate max-w-full">
+            {levelConfig.subtitle}
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2 shrink-0">
+          <button
+            type="button"
+            onClick={onExecute}
+            className="flex items-center gap-2 px-3 py-2 rounded-lg bg-teal-500 hover:bg-teal-600 text-white text-lg font-medium transition-colors"
+            title="Ejecutar"
+          >
+            <Play className="w-4 h-4" />
+            Ejecutar
+          </button>
+          <button
+            type="button"
+            onClick={cycleViewMode}
+            className="px-3 py-2 rounded-lg bg-white/80 hover:bg-white text-slate-800 text-lg font-medium transition-colors border border-sky-300/60"
+          >
+            {VIEW_MODE_LABELS[viewMode]}
+          </button>
+          <button
+            type="button"
+            onClick={() => speakTitle(levelConfig.title, levelConfig.subtitle)}
+            className="p-2 rounded-lg bg-white/80 hover:bg-white text-slate-600 hover:text-slate-900 transition-colors border border-sky-300/60"
+            title="Reproducir título"
+          >
+            <Volume2 className="w-5 h-5" />
+          </button>
+        </div>
       </header>
 
-      <div className="flex-1 relative">
-        <ReactFlow
-          nodes={nodes}
-          edges={edges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          onConnect={onConnect}
-          nodeTypes={nodeTypes}
-          fitView
-          className="bg-slate-900"
-          minZoom={0.3}
-          maxZoom={1.5}
-        >
-          <Background color="#475569" gap={16} size={0.5} />
-          <Controls className="!bg-slate-800 !border-slate-600 !rounded-xl" />
+      <div className="flex-1 flex min-h-0">
+        {!isSandbox && (
+          <>
+            {/* Sidebar: solo en modo niveles (no en Sandbox) */}
+            <aside className="w-64 shrink-0 flex flex-col bg-white border-r border-slate-200 overflow-y-auto">
+              <section className="p-3 border-b border-slate-200">
+                <h2 className="text-base font-semibold text-slate-500 uppercase tracking-wider mb-3">
+                  Mochila
+                </h2>
+                <div className="space-y-3">
+                  <div>
+                    <p className="text-base font-medium text-slate-500 mb-2">Añadir número</p>
+                    <div className="flex flex-wrap gap-1">
+                      {levelConfig.numbers.map((n) => (
+                        <button
+                          key={n}
+                          type="button"
+                          onClick={() => addNumberNode(n)}
+                          className="w-9 h-9 rounded-lg bg-slate-200 hover:bg-teal-500 text-slate-800 hover:text-white font-bold text-lg transition-colors"
+                        >
+                          {n}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-base font-medium text-slate-500 mb-2">Añadir operador</p>
+                    <div className="flex gap-2">
+                      {levelConfig.operators.includes('adicion') && (
+                        <button
+                          type="button"
+                          onClick={() => addOperatorNode('adicion')}
+                          className="flex items-center gap-2 px-3 py-2 rounded-lg bg-teal-500 hover:bg-teal-600 text-white font-bold text-lg transition-colors"
+                        >
+                          <Plus className="w-4 h-4" />
+                          Suma
+                        </button>
+                      )}
+                      {levelConfig.operators.includes('sustraccion') && (
+                        <button
+                          type="button"
+                          onClick={() => addOperatorNode('sustraccion')}
+                          className="flex items-center gap-2 px-3 py-2 rounded-lg bg-rose-500 hover:bg-rose-600 text-white font-bold text-lg transition-colors"
+                        >
+                          <Minus className="w-4 h-4" />
+                          Resta
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </section>
+              <section className="p-3 flex-1">
+                <h2 className="text-base font-semibold text-slate-500 uppercase tracking-wider mb-3">
+                  Reglas para el lenguaje
+                </h2>
+                <p className="text-slate-600 text-base leading-relaxed">
+                  {levelConfig.rule}
+                </p>
+              </section>
+            </aside>
+          </>
+        )}
 
-          <Panel position="top-left" className="m-4 flex flex-col gap-3">
-            <div className="bg-slate-800/95 rounded-xl p-3 border border-slate-600 shadow-xl">
-              <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
-                Añadir número
-              </p>
-              <div className="flex flex-wrap gap-1">
-                {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => (
-                  <button
-                    key={n}
-                    type="button"
-                    onClick={() => addNumberNode(n)}
-                    className="w-9 h-9 rounded-lg bg-slate-700 hover:bg-blue-600 text-white font-bold text-sm transition-colors"
-                  >
-                    {n}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div className="bg-slate-800/95 rounded-xl p-3 border border-slate-600 shadow-xl">
-              <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
-                Añadir operador
-              </p>
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => addOperatorNode('adicion')}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition-colors"
-                >
-                  <Plus className="w-4 h-4" />
-                  Suma
-                </button>
-                <button
-                  type="button"
-                  onClick={() => addOperatorNode('sustraccion')}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-bold transition-colors"
-                >
-                  <Minus className="w-4 h-4" />
-                  Resta
-                </button>
-              </div>
-            </div>
-            <p className="text-slate-500 text-xs max-w-[200px]">
-              Conecta números o resultados de operadores (salida derecha) a los operadores (entradas izquierda). El resultado se muestra debajo y puede usarse en otro operador.
-            </p>
-          </Panel>
-        </ReactFlow>
+        {/* Área principal: canvas ReactFlow (fondo blanco) */}
+        <div className="flex-1 relative min-w-0 bg-white">
+          <ReactFlow
+            nodes={nodes}
+            edges={edges}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onConnect={onConnect}
+            nodeTypes={nodeTypes}
+            fitView
+            className="bg-white"
+            minZoom={1}
+            maxZoom={1}
+            zoomOnScroll={false}
+            zoomOnPinch={false}
+            zoomOnDoubleClick={false}
+            panOnDrag={false}
+            panOnScroll={false}
+            autoPanOnNodeDrag={false}
+          >
+            <Background color="#cbd5e1" gap={16} size={0.5} />
+          </ReactFlow>
+        </div>
       </div>
+
+      {/* Footer: mismo gradiente que el menú */}
+      <footer className="shrink-0 bg-gradient-to-b from-sky-300 via-sky-200 to-emerald-100 border-t border-sky-300/50 px-4 py-3">
+        <section>
+          <p className="text-base font-semibold text-slate-600 uppercase tracking-wider mb-1">
+            El resultado se mostrará acá
+          </p>
+          <p className="text-2xl font-semibold text-slate-800 min-h-[1.5rem]">
+            {executedResult !== null ? executedResult : '—'}
+          </p>
+        </section>
+      </footer>
     </div>
   );
 }

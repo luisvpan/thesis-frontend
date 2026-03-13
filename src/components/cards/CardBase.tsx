@@ -37,21 +37,21 @@ export function CardBase({
   };
 
   const iconSizes = {
-    small: 'text-4xl',
-    medium: 'text-6xl',
-    large: 'text-7xl'
+    small: 'text-5xl',
+    medium: 'text-7xl',
+    large: 'text-8xl'
   };
 
   const nameSizes = {
-    small: 'text-xs',
-    medium: 'text-sm',
-    large: 'text-lg'
+    small: 'text-sm',
+    medium: 'text-base',
+    large: 'text-xl'
   };
 
   const idSizes = {
-    small: 'text-[8px]',
-    medium: 'text-[10px]',
-    large: 'text-xs'
+    small: 'text-[10px]',
+    medium: 'text-xs',
+    large: 'text-sm'
   };
 
   // Convertir gradiente a color sólido

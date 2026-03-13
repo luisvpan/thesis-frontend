@@ -1,14 +1,26 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { SocketProvider } from '@/contexts/SocketContext';
+import { SocketNavigationListener } from '@/components/SocketNavigationListener';
 import HomePage from './pages/HomePage';
 import DataflowPage from './pages/DataflowPage';
+import JuegoMenuPage from './pages/JuegoMenuPage';
+import WorldLevelsPage from './pages/WorldLevelsPage';
+import ConfiguracionPage from './pages/ConfiguracionPage';
 
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/dataflow" element={<DataflowPage />} />
-      </Routes>
+      <SocketProvider>
+        <SocketNavigationListener />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/juego" element={<JuegoMenuPage />} />
+          <Route path="/juego/:worldId" element={<WorldLevelsPage />} />
+          <Route path="/configuracion" element={<ConfiguracionPage />} />
+          <Route path="/ide/sandbox" element={<DataflowPage isSandbox={true} />} />
+          <Route path="/ide/:worldId/:level" element={<DataflowPage isSandbox={false} />} />
+        </Routes>
+      </SocketProvider>
     </BrowserRouter>
   );
 }

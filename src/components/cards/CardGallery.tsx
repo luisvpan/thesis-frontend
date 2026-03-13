@@ -57,10 +57,10 @@ export function CardGallery({ cardSize = 'medium' }: CardGalleryProps) {
   return (
     <div className="w-full h-full overflow-y-auto bg-white p-8">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-5xl font-black text-center mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
+        <h1 className="text-6xl font-black text-center mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
           🎴 Galería de Cartas
         </h1>
-        <p className="text-center text-gray-600 mb-12 text-lg">
+        <p className="text-center text-gray-600 mb-12 text-xl">
           Todas las cartas disponibles para el entorno de programación tangible
         </p>
 
@@ -68,7 +68,7 @@ export function CardGallery({ cardSize = 'medium' }: CardGalleryProps) {
         <section className="mb-16">
           <div className="bg-gradient-to-r from-purple-400 to-pink-400 rounded-2xl p-1 mb-4 shadow-lg">
             <div className="bg-white rounded-xl px-6 py-3">
-              <h2 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
+              <h2 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
                 ⚙️ Operadores ({operators.length} cartas)
               </h2>
             </div>
@@ -76,8 +76,8 @@ export function CardGallery({ cardSize = 'medium' }: CardGalleryProps) {
           <div className="bg-gray-50 rounded-2xl p-6 border-2 border-purple-200">
             {/* Operadores Matemáticos */}
             <div className="mb-8">
-              <h3 className="text-xl font-bold text-gray-700 mb-4 flex items-center gap-2">
-                <span className="text-2xl">🔢</span> Matemáticos ({mathOperators.length})
+              <h3 className="text-2xl font-bold text-gray-700 mb-4 flex items-center gap-2">
+                <span className="text-3xl">🔢</span> Matemáticos ({mathOperators.length})
               </h3>
               <div className="flex flex-wrap gap-4 justify-center">
                 {mathOperators.map((op) => (
@@ -90,8 +90,8 @@ export function CardGallery({ cardSize = 'medium' }: CardGalleryProps) {
 
             {/* Operadores de Orden y Comparación */}
             <div className="mb-8">
-              <h3 className="text-xl font-bold text-gray-700 mb-4 flex items-center gap-2">
-                <span className="text-2xl">⚖️</span> Orden y Comparación ({orderOperators.length})
+              <h3 className="text-2xl font-bold text-gray-700 mb-4 flex items-center gap-2">
+                <span className="text-3xl">⚖️</span> Orden y Comparación ({orderOperators.length})
               </h3>
               <div className="flex flex-wrap gap-4 justify-center">
                 {orderOperators.map((op) => (
@@ -104,8 +104,8 @@ export function CardGallery({ cardSize = 'medium' }: CardGalleryProps) {
 
             {/* Operadores de Filtrado */}
             <div className="mb-8">
-              <h3 className="text-xl font-bold text-gray-700 mb-4 flex items-center gap-2">
-                <span className="text-2xl">🔍</span> Filtrado ({filterOperators.length})
+              <h3 className="text-2xl font-bold text-gray-700 mb-4 flex items-center gap-2">
+                <span className="text-3xl">🔍</span> Filtrado ({filterOperators.length})
               </h3>
               <div className="flex flex-wrap gap-4 justify-center">
                 {filterOperators.map((op) => (
@@ -118,8 +118,8 @@ export function CardGallery({ cardSize = 'medium' }: CardGalleryProps) {
 
             {/* Operadores de Conjuntos */}
             <div>
-              <h3 className="text-xl font-bold text-gray-700 mb-4 flex items-center gap-2">
-                <span className="text-2xl">🔗</span> Conjuntos ({setOperators.length})
+              <h3 className="text-2xl font-bold text-gray-700 mb-4 flex items-center gap-2">
+                <span className="text-3xl">🔗</span> Conjuntos ({setOperators.length})
               </h3>
               <div className="flex flex-wrap gap-4 justify-center">
                 {setOperators.map((op) => (
@@ -136,7 +136,7 @@ export function CardGallery({ cardSize = 'medium' }: CardGalleryProps) {
         <section className="mb-16">
           <div className="bg-gradient-to-r from-blue-400 to-cyan-400 rounded-2xl p-1 mb-4 shadow-lg">
             <div className="bg-white rounded-xl px-6 py-3">
-              <h2 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600">
+              <h2 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600">
                 🔢 Números
               </h2>
             </div>
@@ -156,7 +156,7 @@ export function CardGallery({ cardSize = 'medium' }: CardGalleryProps) {
         <section className="mb-16">
           <div className="bg-gradient-to-r from-green-400 to-emerald-400 rounded-2xl p-1 mb-4 shadow-lg">
             <div className="bg-white rounded-xl px-6 py-3">
-              <h2 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-600">
+              <h2 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-600">
                 🐾 Animales
               </h2>
             </div>
@@ -176,7 +176,7 @@ export function CardGallery({ cardSize = 'medium' }: CardGalleryProps) {
         <section className="mb-16">
           <div className="bg-gradient-to-r from-red-400 to-orange-400 rounded-2xl p-1 mb-4 shadow-lg">
             <div className="bg-white rounded-xl px-6 py-3">
-              <h2 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-orange-600">
+              <h2 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-orange-600">
                 🍎 Comidas
               </h2>
             </div>
@@ -196,7 +196,7 @@ export function CardGallery({ cardSize = 'medium' }: CardGalleryProps) {
         <section className="mb-16">
           <div className="bg-gradient-to-r from-red-400 to-orange-400 rounded-2xl p-1 mb-4 shadow-lg">
             <div className="bg-white rounded-xl px-6 py-3">
-              <h2 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-orange-600">
+              <h2 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-orange-600">
                 🚗 Carros
               </h2>
             </div>
@@ -216,7 +216,7 @@ export function CardGallery({ cardSize = 'medium' }: CardGalleryProps) {
         <section className="mb-16">
           <div className="bg-gradient-to-r from-pink-400 to-rose-400 rounded-2xl p-1 mb-4 shadow-lg">
             <div className="bg-white rounded-xl px-6 py-3">
-              <h2 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-600 to-rose-600">
+              <h2 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-600 to-rose-600">
                 👥 Personas
               </h2>
             </div>
@@ -229,7 +229,7 @@ export function CardGallery({ cardSize = 'medium' }: CardGalleryProps) {
               {/* Encabezados de edades */}
               <div></div>
               {personAges.map((age) => (
-                <div key={age} className="text-center font-bold text-sm text-gray-600 capitalize">
+                <div key={age} className="text-center font-bold text-base text-gray-600 capitalize">
                   {age}
                 </div>
               ))}
@@ -237,7 +237,7 @@ export function CardGallery({ cardSize = 'medium' }: CardGalleryProps) {
             {personGenders.map((gender) => (
               <div key={gender} className="grid grid-cols-5 gap-4 mb-3">
                 {/* Etiqueta de género */}
-                <div className="flex items-center font-bold text-sm text-gray-600 capitalize">
+                <div className="flex items-center font-bold text-base text-gray-600 capitalize">
                   {gender}
                 </div>
                 {/* Cartas */}
@@ -259,7 +259,7 @@ export function CardGallery({ cardSize = 'medium' }: CardGalleryProps) {
         <section className="mb-16">
           <div className="bg-gradient-to-r from-yellow-400 to-lime-400 rounded-2xl p-1 mb-4 shadow-lg">
             <div className="bg-white rounded-xl px-6 py-3">
-              <h2 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-600 to-lime-600">
+              <h2 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-600 to-lime-600">
                 🎨 Figuras
               </h2>
             </div>
@@ -275,7 +275,7 @@ export function CardGallery({ cardSize = 'medium' }: CardGalleryProps) {
               {/* Encabezados de tamaños */}
               <div></div>
               {shapeSizes.map((size) => (
-                <div key={size} className="text-center font-bold text-sm text-gray-600 capitalize">
+                <div key={size} className="text-center font-bold text-base text-gray-600 capitalize">
                   {size}
                 </div>
               ))}
@@ -283,7 +283,7 @@ export function CardGallery({ cardSize = 'medium' }: CardGalleryProps) {
             {shapesWithVariants.map((shape) => (
               <div key={shape} className="grid grid-cols-5 gap-4 mb-3">
                 {/* Etiqueta de forma */}
-                <div className="flex items-center font-bold text-sm text-gray-600 capitalize">
+                <div className="flex items-center font-bold text-base text-gray-600 capitalize">
                   {shape}
                 </div>
                 {/* Cartas */}
@@ -301,7 +301,7 @@ export function CardGallery({ cardSize = 'medium' }: CardGalleryProps) {
             {/* Formas sin variantes */}
             <div className="grid grid-cols-5 gap-4 mb-3">
               {/* Etiqueta de formas sin variantes */}
-              <div className="flex items-center font-bold text-sm text-gray-600 capitalize">
+              <div className="flex items-center font-bold text-base text-gray-600 capitalize">
                 Sin variantes
               </div>
               {/* Cartas */}
@@ -322,44 +322,44 @@ export function CardGallery({ cardSize = 'medium' }: CardGalleryProps) {
         <section className="mb-8">
           <div className="bg-gradient-to-r from-indigo-400 to-purple-400 rounded-2xl p-1 shadow-xl">
             <div className="bg-white rounded-xl px-8 py-6">
-              <h3 className="text-2xl font-black text-center text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 mb-4">
+              <h3 className="text-3xl font-black text-center text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 mb-4">
                 📊 Resumen Total de Cartas
               </h3>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-center">
                 <div className="bg-purple-50 rounded-xl p-3 border-2 border-purple-200">
-                  <div className="text-3xl font-black text-purple-600">{operators.length}</div>
-                  <div className="text-sm font-bold text-gray-600">Operadores</div>
+                  <div className="text-4xl font-black text-purple-600">{operators.length}</div>
+                  <div className="text-base font-bold text-gray-600">Operadores</div>
                 </div>
                 <div className="bg-blue-50 rounded-xl p-3 border-2 border-blue-200">
-                  <div className="text-3xl font-black text-blue-600">{numbers.length}</div>
-                  <div className="text-sm font-bold text-gray-600">Números</div>
+                  <div className="text-4xl font-black text-blue-600">{numbers.length}</div>
+                  <div className="text-base font-bold text-gray-600">Números</div>
                 </div>
                 <div className="bg-green-50 rounded-xl p-3 border-2 border-green-200">
-                  <div className="text-3xl font-black text-green-600">{animals.length}</div>
-                  <div className="text-sm font-bold text-gray-600">Animales</div>
+                  <div className="text-4xl font-black text-green-600">{animals.length}</div>
+                  <div className="text-base font-bold text-gray-600">Animales</div>
                 </div>
                 <div className="bg-red-50 rounded-xl p-3 border-2 border-red-200">
-                  <div className="text-3xl font-black text-red-600">{foods.length}</div>
-                  <div className="text-sm font-bold text-gray-600">Comidas</div>
+                  <div className="text-4xl font-black text-red-600">{foods.length}</div>
+                  <div className="text-base font-bold text-gray-600">Comidas</div>
                 </div>
                 <div className="bg-red-50 rounded-xl p-3 border-2 border-red-200">
-                  <div className="text-3xl font-black text-red-600">{carColors.length}</div>
-                  <div className="text-sm font-bold text-gray-600">Carros</div>
+                  <div className="text-4xl font-black text-red-600">{carColors.length}</div>
+                  <div className="text-base font-bold text-gray-600">Carros</div>
                 </div>
                 <div className="bg-pink-50 rounded-xl p-3 border-2 border-pink-200">
-                  <div className="text-3xl font-black text-pink-600">{personGenders.length * personAges.length}</div>
-                  <div className="text-sm font-bold text-gray-600">Personas</div>
+                  <div className="text-4xl font-black text-pink-600">{personGenders.length * personAges.length}</div>
+                  <div className="text-base font-bold text-gray-600">Personas</div>
                 </div>
                 <div className="bg-yellow-50 rounded-xl p-3 border-2 border-yellow-200">
-                  <div className="text-3xl font-black text-yellow-600">{shapesWithVariants.length * shapeSizes.length * shapeColors.length + shapesWithoutVariants.length}</div>
-                  <div className="text-sm font-bold text-gray-600">Figuras</div>
+                  <div className="text-4xl font-black text-yellow-600">{shapesWithVariants.length * shapeSizes.length * shapeColors.length + shapesWithoutVariants.length}</div>
+                  <div className="text-base font-bold text-gray-600">Figuras</div>
                 </div>
               </div>
               <div className="mt-6 text-center bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl p-4 text-white">
-                <div className="text-4xl font-black">
+                <div className="text-5xl font-black">
                   {operators.length + numbers.length + animals.length + foods.length + carColors.length + (personGenders.length * personAges.length) + (shapesWithVariants.length * shapeSizes.length * shapeColors.length + shapesWithoutVariants.length)}
                 </div>
-                <div className="text-lg font-bold">CARTAS TOTALES</div>
+                <div className="text-xl font-bold">CARTAS TOTALES</div>
               </div>
             </div>
           </div>

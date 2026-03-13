@@ -36,7 +36,7 @@ export default function CardGalleryPage({ onBack }: CardGalleryPageProps) {
                 </motion.span>
               </Link>
             )}
-            <h1 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
+            <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
               🎴 Galería de Cartas
             </h1>
           </div>
