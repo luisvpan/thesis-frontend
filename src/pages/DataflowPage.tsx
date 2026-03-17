@@ -214,22 +214,22 @@ export default function DataflowPage({ isSandbox }: { isSandbox: boolean }) {
   }, [nodes]);
 
   return (
-    <div className="h-screen w-screen flex flex-col bg-slate-100">
-      {/* Header: volver | título centrado + subtítulo | modo | audio — gradiente como menú, sin sidebar en Sandbox */}
-      <header className="flex items-center justify-between px-4 py-3 bg-gradient-to-b from-sky-300 via-sky-200 to-emerald-100 border-b border-sky-300/50 shrink-0 gap-4">
+    <div className="h-screen w-screen flex flex-col bg-slate-900">
+      {/* Header: modo oscuro */}
+      <header className="flex items-center justify-between px-4 py-3 bg-slate-800 border-b border-slate-700 shrink-0 gap-4">
         <Link
           to={backTo}
-          className="flex items-center gap-2 text-slate-600 hover:text-slate-900 transition-colors shrink-0 text-lg"
+          className="flex items-center gap-2 text-slate-300 hover:text-white transition-colors shrink-0 text-lg"
         >
           <ArrowLeft className="w-5 h-5" />
           Volver
         </Link>
 
         <div className="flex-1 flex flex-col items-center justify-center min-w-0">
-          <h1 className="text-2xl font-bold text-slate-800 text-center truncate max-w-full">
+          <h1 className="text-2xl font-bold text-white text-center truncate max-w-full">
             {levelConfig.title}
           </h1>
-          <p className="text-lg text-slate-600 text-center truncate max-w-full">
+          <p className="text-lg text-slate-400 text-center truncate max-w-full">
             {levelConfig.subtitle}
           </p>
         </div>
@@ -247,14 +247,14 @@ export default function DataflowPage({ isSandbox }: { isSandbox: boolean }) {
           <button
             type="button"
             onClick={cycleViewMode}
-            className="px-3 py-2 rounded-lg bg-white/80 hover:bg-white text-slate-800 text-lg font-medium transition-colors border border-sky-300/60"
+            className="px-3 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-200 text-lg font-medium transition-colors border border-slate-600"
           >
             {VIEW_MODE_LABELS[viewMode]}
           </button>
           <button
             type="button"
             onClick={() => speakTitle(levelConfig.title, levelConfig.subtitle)}
-            className="p-2 rounded-lg bg-white/80 hover:bg-white text-slate-600 hover:text-slate-900 transition-colors border border-sky-300/60"
+            className="p-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-300 hover:text-white transition-colors border border-slate-600"
             title="Reproducir título"
           >
             <Volume2 className="w-5 h-5" />
@@ -265,22 +265,22 @@ export default function DataflowPage({ isSandbox }: { isSandbox: boolean }) {
       <div className="flex-1 flex min-h-0">
         {!isSandbox && (
           <>
-            {/* Sidebar: solo en modo niveles (no en Sandbox) */}
-            <aside className="w-64 shrink-0 flex flex-col bg-white border-r border-slate-200 overflow-y-auto">
-              <section className="p-3 border-b border-slate-200">
-                <h2 className="text-base font-semibold text-slate-500 uppercase tracking-wider mb-3">
+            {/* Sidebar: modo oscuro */}
+            <aside className="w-64 shrink-0 flex flex-col bg-slate-800 border-r border-slate-700 overflow-y-auto">
+              <section className="p-3 border-b border-slate-700">
+                <h2 className="text-base font-semibold text-slate-400 uppercase tracking-wider mb-3">
                   Mochila
                 </h2>
                 <div className="space-y-3">
                   <div>
-                    <p className="text-base font-medium text-slate-500 mb-2">Añadir número</p>
+                    <p className="text-base font-medium text-slate-400 mb-2">Añadir número</p>
                     <div className="flex flex-wrap gap-1">
                       {levelConfig.numbers.map((n) => (
                         <button
                           key={n}
                           type="button"
                           onClick={() => addNumberNode(n)}
-                          className="w-9 h-9 rounded-lg bg-slate-200 hover:bg-teal-500 text-slate-800 hover:text-white font-bold text-lg transition-colors"
+                          className="w-9 h-9 rounded-lg bg-slate-700 hover:bg-teal-500 text-slate-200 hover:text-white font-bold text-lg transition-colors"
                         >
                           {n}
                         </button>
@@ -288,7 +288,7 @@ export default function DataflowPage({ isSandbox }: { isSandbox: boolean }) {
                     </div>
                   </div>
                   <div>
-                    <p className="text-base font-medium text-slate-500 mb-2">Añadir operador</p>
+                    <p className="text-base font-medium text-slate-400 mb-2">Añadir operador</p>
                     <div className="flex gap-2">
                       {levelConfig.operators.includes('adicion') && (
                         <button
@@ -315,10 +315,10 @@ export default function DataflowPage({ isSandbox }: { isSandbox: boolean }) {
                 </div>
               </section>
               <section className="p-3 flex-1">
-                <h2 className="text-base font-semibold text-slate-500 uppercase tracking-wider mb-3">
+                <h2 className="text-base font-semibold text-slate-400 uppercase tracking-wider mb-3">
                   Reglas para el lenguaje
                 </h2>
-                <p className="text-slate-600 text-base leading-relaxed">
+                <p className="text-slate-400 text-base leading-relaxed">
                   {levelConfig.rule}
                 </p>
               </section>
@@ -326,8 +326,8 @@ export default function DataflowPage({ isSandbox }: { isSandbox: boolean }) {
           </>
         )}
 
-        {/* Área principal: canvas ReactFlow (fondo blanco) */}
-        <div className="flex-1 relative min-w-0 bg-white">
+        {/* Área principal: canvas ReactFlow (fondo negro) */}
+        <div className="flex-1 relative min-w-0 bg-black">
           <ReactFlow
             nodes={nodes}
             edges={edges}
@@ -336,7 +336,7 @@ export default function DataflowPage({ isSandbox }: { isSandbox: boolean }) {
             onConnect={onConnect}
             nodeTypes={nodeTypes}
             fitView
-            className="bg-white"
+            className="bg-black"
             minZoom={1}
             maxZoom={1}
             zoomOnScroll={false}
@@ -346,18 +346,18 @@ export default function DataflowPage({ isSandbox }: { isSandbox: boolean }) {
             panOnScroll={false}
             autoPanOnNodeDrag={false}
           >
-            <Background color="#cbd5e1" gap={16} size={0.5} />
+            <Background color="#334155" gap={16} size={0.5} />
           </ReactFlow>
         </div>
       </div>
 
-      {/* Footer: mismo gradiente que el menú */}
-      <footer className="shrink-0 bg-gradient-to-b from-sky-300 via-sky-200 to-emerald-100 border-t border-sky-300/50 px-4 py-3">
+      {/* Footer: modo oscuro */}
+      <footer className="shrink-0 bg-slate-800 border-t border-slate-700 px-4 py-3">
         <section>
-          <p className="text-base font-semibold text-slate-600 uppercase tracking-wider mb-1">
+          <p className="text-base font-semibold text-slate-400 uppercase tracking-wider mb-1">
             El resultado se mostrará acá
           </p>
-          <p className="text-2xl font-semibold text-slate-800 min-h-[1.5rem]">
+          <p className="text-2xl font-semibold text-white min-h-[1.5rem]">
             {executedResult !== null ? executedResult : '—'}
           </p>
         </section>
